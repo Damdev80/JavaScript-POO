@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tareas de Empleados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .tareas {
+            margin-top: 20px;
+        }
+        .tareas ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .tareas li {
+            background-color: #eee;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+        }
+        .tareas li button {
+            background-color: #dc3545;
+        }
+        .tareas li button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Tareas de Empleados</h1>
+        
+        <!-- Formulario para agregar información del empleado -->
+        <div class="form-group">
+            <label for="nombre">Nombre del empleado:</label>
+            <input type="text" id="nombre" placeholder="Ingresa el nombre del empleado">
+        </div>
+
+        <div class="form-group">
+            <label for="cargo">Cargo del empleado:</label>
+            <input type="text" id="cargo" placeholder="Ingresa el cargo del empleado">
+        </div>
+
+        <div class="form-group">
+            <label for="edad">Edad del empleado:</label>
+            <input type="number" id="edad" placeholder="Ingresa la edad del empleado">
+        </div>
+
+        <!-- Formulario para agregar tareas -->
+        <div class="form-group">
+            <label for="tarea">Tarea para el empleado:</label>
+            <input type="text" id="tarea" placeholder="Ingresa una tarea">
+        </div>
+
+        <button onclick="agregarTarea()">Agregar Tarea</button>
+
+        <!-- Lista de tareas -->
+        <div class="tareas">
+            <h2>Lista de Tareas:</h2>
+            <ul id="lista-tareas"></ul>
+        </div>
+    </div>
+
+    <script>
+        class TareaEmpleado {
+            constructor(nombre, cargo, edad) {
+                this.nombre = nombre;
+                this.cargo = cargo;
+                this.edad = edad;
+                this.tareas = [];
+            }
+
+            agregarTarea(tarea) {
+                this.tareas.push(tarea);
+                this.mostrarTareas();
+            }
+
+            eliminarTarea(index) {
+                this.tareas.splice(index, 1);
+                this.mostrarTareas();
+            }
+
+            mostrarTareas() {
+                const listaTareas = document.getElementById('lista-tareas');
+                listaTareas.innerHTML = ''; // Limpiar la lista
+                this.tareas.forEach((tarea, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = tarea;
+                    const botonEliminar = document.createElement('button');
+                    botonEliminar.textContent = 'Eliminar';
+                    botonEliminar.onclick = () => this.eliminarTarea(index);
+                    li.appendChild(botonEliminar);
+                    listaTareas.appendChild(li);
+                });
+            }
+        }
+
+        // Crear una instancia global del empleado
+        let empleado = null;
+
+        // Función para agregar una nueva tarea
+        function agregarTarea() {
+            const nombre = document.getElementById('nombre').value.trim();
+            const cargo = document.getElementById('cargo').value.trim();
+            const edad = document.getElementById('edad').value.trim();
+            const tarea = document.getElementById('tarea').value.trim();
+
+            // Validar que los campos del empleado estén completos al crear la instancia
+            if (!empleado) {
+                if (nombre && cargo && edad) {
+                    empleado = new TareaEmpleado(nombre, cargo, edad);
+                    // Limpiar los campos de información del empleado
+                    document.getElementById('nombre').value = '';
+                    document.getElementById('cargo').value = '';
+                    document.getElementById('edad').value = '';
+                } else {
+                    alert("Por favor, completa los datos del empleado antes de agregar tareas.");
+                    return;
+                }
+            }
+
+            // Validar que se haya ingresado una tarea
+            if (tarea) {
+                empleado.agregarTarea(tarea);
+                // Limpiar el campo de tarea después de agregarla
+                document.getElementById('tarea').value = '';
+            } else {
+                alert("Por favor, ingresa una tarea.");
+            }
+        }
+    </script>
+</body>
+</html>
